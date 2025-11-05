@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -21,8 +21,10 @@ interface Transaction {
   type: string;
   category: string;
   amount: number;
-  description: string;
+  description: string | null;
   transaction_date: string;
+  user_id: string;
+  created_at: string | null;
 }
 
 interface Allocation {
@@ -34,35 +36,11 @@ interface Allocation {
 const Dashboard = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
-  const [loading, setLoading] = useState(true);
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [allocations, setAllocations] = useState<Allocation[]>([]);
   const [userName, setUserName] = useState("");
 
-  useEffect(() => {
-    loadUserData();
-    loadTransactions();
-    loadAllocations();
-  }, []);
-
-  const loadUserData = async () => {
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-    if (user) {
-      const { data: profile } = await supabase
-        .from("profiles")
-        .select("full_name")
-        .eq("id", user.id)
-        .single();
-
-      if (profile) {
-        setUserName(profile.full_name || "");
-      }
-    }
-  };
-
-  const loadTransactions = async () => {
+  const loadTransactions = useCallback(async () => {
     const {
       data: { user },
     } = await supabase.auth.getUser();
@@ -83,10 +61,9 @@ const Dashboard = () => {
     } else {
       setTransactions(data || []);
     }
-    setLoading(false);
-  };
+  }, [toast]);
 
-  const loadAllocations = async () => {
+  const loadAllocations = useCallback(async () => {
     const {
       data: { user },
     } = await supabase.auth.getUser();
@@ -105,6 +82,29 @@ const Dashboard = () => {
       });
     } else {
       setAllocations(data || []);
+    }
+  }, [toast]);
+
+  useEffect(() => {
+    loadUserData();
+    loadTransactions();
+    loadAllocations();
+  }, [loadTransactions, loadAllocations]);
+
+  const loadUserData = async () => {
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    if (user) {
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("full_name")
+        .eq("id", user.id)
+        .single();
+
+      if (profile) {
+        setUserName(profile.full_name || "");
+      }
     }
   };
 
@@ -155,7 +155,7 @@ const Dashboard = () => {
   const hasOverBudget = spendingByCategory.some((cat) => cat.isOverBudget);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-secondary via-background to-muted">
+    <div className="min-h-screen bg-linear-to-br from-secondary via-background to-muted">
       <div className="container mx-auto p-4 md:p-6 max-w-7xl">
         {/* Header */}
         <div className="flex justify-between items-center mb-8">

@@ -15,8 +15,10 @@ interface Transaction {
   type: string;
   category: string;
   amount: number;
-  description: string;
+  description: string | null;
   transaction_date: string;
+  user_id: string;
+  created_at: string | null;
 }
 
 interface TransactionListProps {
