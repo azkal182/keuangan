@@ -99,15 +99,16 @@ export const TransactionForm = ({
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-2">
+          {/* Baris 1: Jenis & Kategori */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="space-y-2 min-w-0">
               <Label htmlFor="type">Jenis</Label>
               <Select
                 value={type}
                 onValueChange={(value: "income" | "expense") => setType(value)}
               >
-                <SelectTrigger id="type">
-                  <SelectValue />
+                <SelectTrigger id="type" className="w-full">
+                  <SelectValue placeholder="Pilih jenis" />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="income">Pemasukan</SelectItem>
@@ -116,11 +117,11 @@ export const TransactionForm = ({
               </Select>
             </div>
 
-            <div className="space-y-2">
+            <div className="space-y-2 min-w-0">
               <Label htmlFor="category">Kategori</Label>
               {type === "expense" && allocations.length > 0 ? (
                 <Select value={category} onValueChange={setCategory}>
-                  <SelectTrigger id="category">
+                  <SelectTrigger id="category" className="w-full">
                     <SelectValue placeholder="Pilih kategori" />
                   </SelectTrigger>
                   <SelectContent>
@@ -137,6 +138,7 @@ export const TransactionForm = ({
               ) : (
                 <Input
                   id="category"
+                  className="w-full"
                   placeholder="Contoh: Gaji, Freelance"
                   value={category}
                   onChange={(e) => setCategory(e.target.value)}
@@ -145,24 +147,28 @@ export const TransactionForm = ({
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-2">
+          {/* Baris 2: Jumlah & Tanggal */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="space-y-2 min-w-0">
               <Label htmlFor="amount">Jumlah (Rp)</Label>
               <Input
                 id="amount"
+                className="w-full"
                 type="number"
                 step="0.01"
                 min="0"
                 placeholder="0"
                 value={amount}
                 onChange={(e) => setAmount(e.target.value)}
+                inputMode="decimal"
               />
             </div>
 
-            <div className="space-y-2">
+            <div className="space-y-2 min-w-0">
               <Label htmlFor="date">Tanggal</Label>
               <Input
                 id="date"
+                className="w-full"
                 type="date"
                 value={date}
                 onChange={(e) => setDate(e.target.value)}
@@ -170,10 +176,12 @@ export const TransactionForm = ({
             </div>
           </div>
 
+          {/* Baris 3: Keterangan */}
           <div className="space-y-2">
             <Label htmlFor="description">Keterangan (Opsional)</Label>
             <Textarea
               id="description"
+              className="w-full"
               placeholder="Tambahkan catatan..."
               value={description}
               onChange={(e) => setDescription(e.target.value)}
