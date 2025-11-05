@@ -8,7 +8,18 @@ import {
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { useState } from "react";
 import { Trash2, TrendingUp, TrendingDown } from "lucide-react";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 
 interface Transaction {
   id: string;
@@ -31,6 +42,7 @@ export const TransactionList = ({
   onUpdate,
 }: TransactionListProps) => {
   const { toast } = useToast();
+  const [deleteId, setDeleteId] = useState<string | null>(null);
 
   const handleDelete = async (id: string) => {
     const { error } = await supabase.from("transactions").delete().eq("id", id);
@@ -48,6 +60,7 @@ export const TransactionList = ({
       });
       onUpdate();
     }
+    setDeleteId(null);
   };
 
   const formatDate = (dateString: string) => {
@@ -115,7 +128,7 @@ export const TransactionList = ({
                   <Button
                     variant="ghost"
                     size="sm"
-                    onClick={() => handleDelete(transaction.id)}
+                    onClick={() => setDeleteId(transaction.id)}
                   >
                     <Trash2 className="w-4 h-4 text-destructive" />
                   </Button>
@@ -125,6 +138,26 @@ export const TransactionList = ({
           </div>
         )}
       </CardContent>
+
+      <AlertDialog open={deleteId !== null} onOpenChange={(open) => !open && setDeleteId(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Konfirmasi Hapus Transaksi</AlertDialogTitle>
+            <AlertDialogDescription>
+              Apakah Anda yakin ingin menghapus transaksi ini? Tindakan ini tidak dapat dibatalkan.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Batal</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() => deleteId && handleDelete(deleteId)}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
+              Hapus
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </Card>
   );
 };

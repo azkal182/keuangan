@@ -12,6 +12,16 @@ import {
 } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { Plus, Trash2 } from "lucide-react";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 
 interface Allocation {
   id: string;
@@ -32,6 +42,7 @@ export const AllocationSettings = ({
   const [newCategory, setNewCategory] = useState("");
   const [newPercentage, setNewPercentage] = useState("");
   const [loading, setLoading] = useState(false);
+  const [deleteId, setDeleteId] = useState<string | null>(null);
 
   const totalPercentage = allocations.reduce(
     (sum, a) => sum + Number(a.percentage),
@@ -115,6 +126,7 @@ export const AllocationSettings = ({
       });
       onAllocationsUpdated();
     }
+    setDeleteId(null);
   };
 
   return (
@@ -181,7 +193,7 @@ export const AllocationSettings = ({
                   <Button
                     variant="ghost"
                     size="sm"
-                    onClick={() => handleDeleteAllocation(allocation.id)}
+                    onClick={() => setDeleteId(allocation.id)}
                   >
                     <Trash2 className="w-4 h-4 text-destructive" />
                   </Button>
@@ -198,6 +210,26 @@ export const AllocationSettings = ({
           </p>
         )}
       </CardContent>
+
+      <AlertDialog open={deleteId !== null} onOpenChange={(open) => !open && setDeleteId(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Konfirmasi Hapus Alokasi</AlertDialogTitle>
+            <AlertDialogDescription>
+              Apakah Anda yakin ingin menghapus alokasi ini? Tindakan ini tidak dapat dibatalkan.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Batal</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() => deleteId && handleDeleteAllocation(deleteId)}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
+              Hapus
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </Card>
   );
 };
