@@ -8,6 +8,7 @@ import Report from "./pages/Report";
 import Auth from "./pages/Auth";
 import NotFound from "./pages/NotFound";
 import { AuthGuard } from "./components/AuthGuard";
+import { PWAUpdatePrompt } from "./components/PWAUpdatePrompt";
 
 const queryClient = new QueryClient();
 
@@ -39,6 +40,7 @@ const App = () => (
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
+      <PWAUpdatePrompt />
     </TooltipProvider>
   </QueryClientProvider>
 );

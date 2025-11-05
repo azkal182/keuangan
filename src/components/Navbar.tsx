@@ -106,9 +106,9 @@ export const Navbar = () => {
           </div>
 
           {/* User Info & Actions */}
-          <div className="hidden md:flex md:items-center md:gap-4">
+          <div className="hidden md:flex md:items-center md:gap-6">
             {userName && (
-              <div className="hidden lg:block text-sm text-muted-foreground ml-4">
+              <div className="hidden lg:block text-sm text-muted-foreground px-4">
                 <span className="font-medium text-foreground">{userName}</span>
               </div>
             )}

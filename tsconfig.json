@@ -5,6 +5,7 @@
     { "path": "./tsconfig.node.json" }
   ],
   "compilerOptions": {
+    "types": ["vite-plugin-pwa/react"],
     "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"]
