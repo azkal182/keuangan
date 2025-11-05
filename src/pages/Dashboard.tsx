@@ -101,7 +101,6 @@ const Dashboard = () => {
     loadAllocations();
   }, [loadTransactions, loadAllocations]);
 
-
   // Navigasi bulan
   const handlePreviousMonth = () => {
     if (selectedMonth === 0) {
@@ -137,7 +136,7 @@ const Dashboard = () => {
   // Calculate cumulative balance (saldo akumulatif)
   // Transaksi dari awal sampai akhir bulan terpilih
   const cumulativeTransactions = transactions.filter((t) => {
-    const date = new Date(t.transaction_date);
+    // const date = new Date(t.transaction_date);
     const transactionDate = new Date(selectedYear, selectedMonth + 1, 0); // Last day of selected month
     return new Date(t.transaction_date) <= transactionDate;
   });
@@ -226,7 +225,11 @@ const Dashboard = () => {
       transactions[transactions.length - 1].transaction_date
     ).getFullYear();
     const currentYear = new Date().getFullYear();
-    for (let year = Math.min(firstYear, currentYear); year <= currentYear + 1; year++) {
+    for (
+      let year = Math.min(firstYear, currentYear);
+      year <= currentYear + 1;
+      year++
+    ) {
       years.push(year);
     }
   } else {
@@ -258,7 +261,9 @@ const Dashboard = () => {
                   <Calendar className="h-4 w-4 text-primary" />
                 </div>
                 <div>
-                  <h3 className="font-semibold text-base sm:text-lg">Pilih Periode</h3>
+                  <h3 className="font-semibold text-base sm:text-lg">
+                    Pilih Periode
+                  </h3>
                   <p className="text-xs text-muted-foreground sm:hidden">
                     Pilih bulan dan tahun yang ingin dilihat
                   </p>
